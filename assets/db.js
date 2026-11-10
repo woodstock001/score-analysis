@@ -366,7 +366,7 @@ const Cloud = {
         class_avg: e.classAvg, grade_avg: e.gradeAvg, note: e.note
       }));
       const scores = DB.data.scores.map(s => ({
-        id: s.id, user_id: uid, exam_id: s.examId, subject: s.subject, raw: s.raw, full: s.full,
+        id: s.id, user_id: uid, exam_id: s.examId, subject: s.subject, raw: s.raw, full_score: s.full,
         grade: s.grade, a_paper: s.aPaper, a_full: s.aFull, b_paper: s.bPaper, b_full: s.bFull,
         class_avg: s.classAvg, class_rank: s.classRank
       }));

@@ -47,7 +47,7 @@ create table if not exists public.scores (
   exam_id     uuid not null references public.exams(id) on delete cascade,
   subject     text not null,
   raw         numeric,
-  full        numeric,
+  full_score  numeric,
   grade       text,
   a_paper     numeric,
   a_full      numeric,

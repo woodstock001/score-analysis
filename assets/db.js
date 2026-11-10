@@ -241,7 +241,9 @@ const Cloud = {
 
   cfg() {
     const s = DB.data.settings;
-    return { url: (s.url || '').replace(/\/+$/, ''), key: s.anonKey || '' };
+    let url = (s.url || '').trim().replace(/\/+$/, '');
+    url = url.replace(/\/rest\/v1$/, '').replace(/\/+$/, '');
+    return { url, key: (s.anonKey || '').trim() };
   },
 
   ready() {

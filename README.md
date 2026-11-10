@@ -1,5 +1,8 @@
 # 成绩分析
 
+**线上：** https://woodstock001.github.io/score-analysis/
+**代码：** https://github.com/woodstock001/score-analysis
+
 成都中考 710 分制 · 初中三年成绩追踪与诊断。纯静态网页，数据只存在你自己的浏览器和你自己的 Supabase 项目里，不经过任何第三方后端。
 
 ## 一、直接开始用

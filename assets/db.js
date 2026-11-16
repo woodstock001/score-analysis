@@ -164,7 +164,8 @@ const DB = {
         bPaper: numOrNull(r.bPaper),
         bFull: numOrNull(r.bFull),
         classAvg: numOrNull(r.classAvg),
-        classRank: numOrNull(r.classRank)
+        classRank: numOrNull(r.classRank),
+        gradeRank: numOrNull(r.gradeRank)
       });
     });
     this.save();
@@ -216,11 +217,11 @@ const DB = {
   exportCSV(studentId) {
     const stu = this.student(studentId);
     const exams = this.examsOf(studentId);
-    const lines = ['学生,考试,日期,年级,科目,分数,满分,得分率,班均分,班排'];
+    const lines = ['学生,考试,日期,年级,科目,分数,满分,得分率,班均分,班排,年级排名'];
     exams.forEach(e => {
       this.scoresOf(e.id).forEach(s => {
         const rate = s.full ? (s.raw / s.full * 100).toFixed(1) + '%' : '';
-        lines.push([stu?.nickname || '', e.name, e.date, e.grade + '年级', SUBJECT_MAP[s.subject]?.name || s.subject, s.raw, s.full, rate, s.classAvg ?? '', s.classRank ?? ''].join(','));
+        lines.push([stu?.nickname || '', e.name, e.date, e.grade + '年级', SUBJECT_MAP[s.subject]?.name || s.subject, s.raw, s.full, rate, s.classAvg ?? '', s.classRank ?? '', s.gradeRank ?? ''].join(','));
       });
     });
     return '\ufeff' + lines.join('\n');
@@ -370,7 +371,7 @@ const Cloud = {
       const scores = DB.data.scores.map(s => ({
         id: s.id, user_id: uid, exam_id: s.examId, subject: s.subject, raw: s.raw, full_score: s.full,
         grade: s.grade, a_paper: s.aPaper, a_full: s.aFull, b_paper: s.bPaper, b_full: s.bFull,
-        class_avg: s.classAvg, class_rank: s.classRank
+        class_avg: s.classAvg, class_rank: s.classRank, grade_rank: s.gradeRank
       }));
       const targets = DB.data.targets.map(t => ({
         id: t.id, user_id: uid, student_id: t.studentId, school_id: t.schoolId, school_name: t.schoolName,
@@ -417,7 +418,7 @@ const Cloud = {
     DB.data.scores = scores.map(s => ({
       id: s.id, examId: s.exam_id, subject: s.subject, raw: s.raw, full: s.full_score, grade: s.grade,
       aPaper: s.a_paper, aFull: s.a_full, bPaper: s.b_paper, bFull: s.b_full,
-      classAvg: s.class_avg, classRank: s.class_rank
+      classAvg: s.class_avg, classRank: s.class_rank, gradeRank: s.grade_rank
     }));
     DB.data.targets = targets.map(t => ({
       id: t.id, studentId: t.student_id, schoolId: t.school_id, schoolName: t.school_name,

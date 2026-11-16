@@ -32,6 +32,8 @@ const A = {
         grade: s.grade || null,
         classAvg: s.classAvg ?? null,
         classRank: s.classRank ?? null,
+        gradeRank: s.gradeRank ?? null,
+        gradePct: (s.gradeRank && exam.gradeSize) ? (1 - s.gradeRank / exam.gradeSize) * 100 : null,
         aRate: s.aFull ? this.rate(s.aPaper, s.aFull) : null,
         bRate: s.bFull ? this.rate(s.bPaper, s.bFull) : null,
         diff: s.classAvg != null ? s.raw - s.classAvg : null,

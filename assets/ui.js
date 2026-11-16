@@ -301,9 +301,10 @@ const UI = {
           <div class="field"><label>B 卷得分</label><input class="inp" type="number" step="0.5" id="sb_${s.code}" value="${cur.bPaper ?? ''}"></div>
           <div class="field"><label>B 卷满分</label><input class="inp" type="number" step="1" id="sbf_${s.code}" value="${cur.bFull ?? ''}"></div>
         </div>` : ''}
-        <div class="grid2">
+        <div class="grid3">
           <div class="field"><label>班级平均分</label><input class="inp" type="number" step="0.5" id="savg_${s.code}" value="${cur.classAvg ?? ''}"></div>
           <div class="field"><label>班级排名</label><input class="inp" type="number" step="1" id="srank_${s.code}" value="${cur.classRank ?? ''}"></div>
+          <div class="field"><label>年级排名</label><input class="inp" type="number" step="1" id="sgrade_${s.code}" value="${cur.gradeRank ?? ''}"></div>
         </div>
       </div>
     </div>`;
@@ -322,7 +323,7 @@ const UI = {
         full: g('sf_' + code),
         aPaper: g('sa_' + code), aFull: g('saf_' + code),
         bPaper: g('sb_' + code), bFull: g('sbf_' + code),
-        classAvg: g('savg_' + code), classRank: g('srank_' + code)
+        classAvg: g('savg_' + code), classRank: g('srank_' + code), gradeRank: g('sgrade_' + code)
       });
     });
     return {
@@ -399,7 +400,7 @@ const UI = {
       <div class="bar-row">
         <div class="bar-label">${esc(i.name)}</div>
         <div class="bar-track"><div class="bar-fill ${rateColor(i.rate)}" style="width:${Math.min(i.rate * 100, 100)}%"></div></div>
-        <div class="bar-val">${p1(i.rate * 100)}</div>
+        <div class="bar-val">${p1(i.rate * 100)}${i.gradeRank ? `<div class="bar-rank">年级${i.gradeRank}</div>` : ''}</div>
       </div>`).join('');
 
     // 目标表

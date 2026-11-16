@@ -55,6 +55,7 @@ create table if not exists public.scores (
   b_full      numeric,
   class_avg   numeric,
   class_rank  int,
+  grade_rank  int,
   created_at  timestamptz default now()
 );
 

@@ -309,7 +309,8 @@ function rebuildSubjects(grade) {
       bPaper: document.getElementById('sb_' + c)?.value ?? '',
       bFull: document.getElementById('sbf_' + c)?.value ?? '',
       classAvg: document.getElementById('savg_' + c)?.value ?? '',
-      classRank: document.getElementById('srank_' + c)?.value ?? ''
+      classRank: document.getElementById('srank_' + c)?.value ?? '',
+      gradeRank: document.getElementById('sgrade_' + c)?.value ?? ''
     };
   });
   const lastFull = DB.data.settings.lastFull || {};

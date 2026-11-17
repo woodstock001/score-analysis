@@ -71,6 +71,8 @@ const A = {
       exam, items, totalRaw: sumRaw, totalFull: sumFull, totalRate,
       zkCovered, zkEarned, coverage, predicted, confidence,
       imbalance, hasClassAvg,
+      classRank: exam.classRank || null, classSize: exam.classSize || null,
+      gradeRank: exam.gradeRank || null, gradeSize: exam.gradeSize || null,
       classPercentile, gradePercentile,
       strongest: items[0] || null,
       weakest: items[items.length - 1] || null

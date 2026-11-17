@@ -472,15 +472,16 @@ const UI = {
             <div class="tiny muted">校内总分</div>
           </div>
         </div>
-        <div class="kpis" style="margin-top:14px">
+        <div class="kpis" style="margin-top:14px;grid-template-columns:repeat(2,1fr)">
           <div class="kpi"><div class="k">外推中考</div><div class="v">${n1(st.predicted)}<small>分</small></div></div>
           <div class="kpi"><div class="k">班级位次</div><div class="v">${st.classPercentile != null ? p1(st.classPercentile) : '—'}<small>${st.classPercentile != null ? '百分位' : '未录'}</small></div></div>
           <div class="kpi"><div class="k">偏科指数</div><div class="v">${n1(st.imbalance)}<small>pt</small></div></div>
+          <div class="kpi"><div class="k">年级位次</div><div class="v">${st.gradeRank != null ? '第' + st.gradeRank + '名' : '—'}<small>${st.gradePercentile != null ? p1(st.gradePercentile) + '分位' : (st.gradeRank != null ? '未录人数' : '未录')}</small></div></div>
         </div>
         <div class="note info" style="margin-top:12px">
           <span>ℹ️</span><span>覆盖 ${intf(st.zkCovered)}/710 分（${p1(st.coverage * 100)}），未含${this.missingSubjects(cur.grade)}。外推假设未考科目保持同等水平。</span>
         </div>
-        ${st.classPercentile == null ? `<div class="note warn"><span>⚠️</span><span>未录入班级排名和人数，位次类指标不可用。这不影响得分率和学科诊断。</span></div>` : ''}
+        ${st.classRank == null && st.gradeRank == null ? `<div class="note warn"><span>⚠️</span><span>未录入班级/年级排名，位次类指标不可用。这不影响得分率和学科诊断。</span></div>` : ''}
       </div>
 
       <div class="card">

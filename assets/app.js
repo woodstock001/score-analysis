@@ -19,6 +19,10 @@ document.addEventListener('click', async (e) => {
       UI.setTab(el.dataset.tab);
       break;
 
+    case 'trendPick':
+      UI.renderTrendChart(el.dataset.code);
+      break;
+
     case 'toggleMore': {
       const m = document.getElementById('more_' + el.dataset.code);
       if (m) {

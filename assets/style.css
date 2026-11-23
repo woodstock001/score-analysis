@@ -89,6 +89,15 @@ button { cursor: pointer; }
 .kpi .v { font-size: 19px; font-weight: 700; letter-spacing: -.3px; }
 .kpi .v small { font-size: 11px; font-weight: 500; color: var(--muted); }
 
+.chips { display: flex; gap: 6px; overflow-x: auto; padding: 2px 0 10px; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+.chips::-webkit-scrollbar { display: none; }
+.chip {
+  flex: 0 0 auto; border: 1px solid #e2e8f0; background: #fff; color: var(--ink2);
+  border-radius: 999px; padding: 5px 12px; font-size: 12px; font-weight: 600;
+  line-height: 1; cursor: pointer; font-family: inherit;
+}
+.chip.on { background: var(--primary, #0e7490); border-color: var(--primary, #0e7490); color: #fff; }
+
 .tag {
   display: inline-block; padding: 2px 8px; border-radius: 999px;
   font-size: 11px; font-weight: 600; background: #f1f5f9; color: var(--ink2);

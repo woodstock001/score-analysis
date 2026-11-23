@@ -21,8 +21,72 @@ const UI = {
   cmpA: null,
   cmpB: null,
   searchQ: '',
+  trendSubject: 'total',
+  _trendSeries: null,
+  _trendLimit: 0,
 
   setTab(t) { this.tab = t; this.render(); window.scrollTo({ top: 0, behavior: 'instant' }); },
+
+  // ── 得分率走势（总分 / 单科切换） ──
+  trendCard(tr, limit) {
+    this._trendSeries = tr.series;
+    this._trendLimit = limit || 0;
+    const code = this.trendSubject || 'total';
+    const codes = new Set(tr.series.flatMap(x => x.items.map(i => i.subject)));
+    const have = SUBJECTS.filter(s => codes.has(s.code));
+    const chips = `<div class="chips" id="trendTabs">
+        <button class="chip ${code === 'total' ? 'on' : ''}" data-act="trendPick" data-code="total">总分</button>
+        ${have.map(s => `<button class="chip ${code === s.code ? 'on' : ''}" data-act="trendPick" data-code="${s.code}">${esc(s.name)}</button>`).join('')}
+      </div>`;
+    return `<div class="card">
+        <div class="card-h"><h3>得分率走势</h3><div class="spacer"></div>
+          <span class="tiny" id="trendStat">${this.trendStatHtml(tr.series, code)}</span></div>
+        ${chips}
+        <div id="trendChart">${this.trendChartHtml(tr.series, code)}</div>
+      </div>`;
+  },
+
+  trendPoints(series, code) {
+    const rows = this._trendLimit ? series.slice(-this._trendLimit) : series;
+    return rows.map(s => {
+      let v = null;
+      if (code === 'total') v = s.rate != null ? s.rate * 100 : null;
+      else {
+        const it = s.items.find(i => i.subject === code);
+        v = (it && it.rate != null) ? it.rate * 100 : null;
+      }
+      return { label: s.exam.name.length > 6 ? s.exam.name.slice(0, 6) : s.exam.name, value: v };
+    }).filter(p => p.value != null);
+  },
+
+  trendChartHtml(series, code) {
+    const pts = this.trendPoints(series, code);
+    if (!pts.length) return '<div class="muted small" style="padding:12px 0">该科目暂无成绩数据。</div>';
+    return lineChart(pts);
+  },
+
+  trendStatHtml(series, code) {
+    const ys = this.trendPoints(series, code).map(p => p.value);
+    if (ys.length < 2) return '';
+    const n = ys.length;
+    const mx = (n - 1) / 2;
+    const my = ys.reduce((a, b) => a + b, 0) / n;
+    const num = ys.reduce((a, y, i) => a + (i - mx) * (y - my), 0);
+    const den = ys.reduce((a, _, i) => a + (i - mx) ** 2, 0);
+    const slope = den ? num / den : 0;
+    const vol = Math.sqrt(ys.reduce((a, y) => a + (y - my) ** 2, 0) / n);
+    return `<span style="color:${slope >= 0 ? 'var(--ok)' : 'var(--bad)'}">${slope >= 0 ? '↑' : '↓'} ${n1(Math.abs(slope))} pt/次 · 波动 ${n1(vol)}</span>`;
+  },
+
+  renderTrendChart(code) {
+    this.trendSubject = code;
+    const series = this._trendSeries || [];
+    const box = document.getElementById('trendChart');
+    if (box) box.innerHTML = this.trendChartHtml(series, code);
+    const stat = document.getElementById('trendStat');
+    if (stat) stat.innerHTML = this.trendStatHtml(series, code);
+    document.querySelectorAll('#trendTabs .chip').forEach(c => c.classList.toggle('on', c.dataset.code === code));
+  },
 
   toast(msg) {
     const d = document.createElement('div');
@@ -170,13 +234,7 @@ const UI = {
         ${gapRows || '<div class="muted small">还没有设定目标校</div>'}
       </div>
 
-      ${trendPts.length >= 2 ? `<div class="card">
-        <div class="card-h"><h3>得分率走势</h3><div class="spacer"></div>
-          <span class="tiny ${tr.slope > 0 ? 'muted' : ''}" style="color:${tr.slope >= 0 ? 'var(--ok)' : 'var(--bad)'}">
-            ${tr.slope == null ? '' : (tr.slope >= 0 ? '↑ ' : '↓ ') + n1(Math.abs(tr.slope)) + ' pt/次'}
-          </span></div>
-        ${lineChart(trendPts)}
-      </div>` : ''}
+      ${tr.series.length >= 2 ? this.trendCard(tr, 8) : ''}
 
       <div class="card">
         <div class="card-h"><h3>本次最该补的三科</h3></div>
@@ -521,13 +579,7 @@ const UI = {
         <div class="tiny muted" style="margin-top:8px">道法、历史、地理、生物按 A20/B16/C12/D8 折算，四科全 B 比全 A 少 16 分。</div>
       </div>` : ''}
 
-      ${trendPts.length >= 2 ? `<div class="card">
-        <div class="card-h"><h3>得分率走势</h3><div class="spacer"></div>
-          <span class="tiny" style="color:${(tr.slope ?? 0) >= 0 ? 'var(--ok)' : 'var(--bad)'}">
-            ${tr.slope == null ? '' : (tr.slope >= 0 ? '↑' : '↓') + n1(Math.abs(tr.slope)) + ' pt/次'}
-            ${tr.volatility != null ? ' · 波动 ' + n1(tr.volatility) : ''}</span></div>
-        ${lineChart(trendPts)}
-      </div>` : `<div class="card"><div class="muted small">录满 2 次考试后显示趋势。</div></div>`}
+      ${tr.series.length >= 2 ? this.trendCard(tr, 0) : `<div class="card"><div class="muted small">录满 2 次考试后显示趋势。</div></div>`}
 
       ${alerts.length ? `<div class="card">
         <div class="card-h"><h3>预警</h3></div>
